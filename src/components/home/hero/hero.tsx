@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useGetArticles } from '@/hooks/useArticles';
 import { ArticleCardLarge } from '../../shared/article-card/article-card-large';
 import { ArticleCardSkeleton } from '../../shared/article-card/article-card-skeleton';
