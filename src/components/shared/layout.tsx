@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router'
 import { Footer } from './footer'
 import { Header } from './header/header'
+import { ScrollToTopButton } from './scroll-to-top-button'
 
 export function Layout() {
 	return (
@@ -10,6 +11,7 @@ export function Layout() {
 				<Outlet />
 			</main>
 			<Footer />
+			<ScrollToTopButton />
 		</div>
 	)
 }

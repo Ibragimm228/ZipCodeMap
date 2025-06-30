@@ -28,7 +28,13 @@ export function useGetArticleBySlug(slug: string) {
 		queryKey: ['article', slug],
 		queryFn: async () => {
 			const articles = await articlesService.getAll()
-			return articles?.find(article => slugify(article.title) === slug) || null
+			return (
+				articles?.find(
+					article =>
+						slugify(article.title, { lower: true, strict: true }) ===
+						slug.toLowerCase()
+				) || null
+			)
 		},
 	})
 }

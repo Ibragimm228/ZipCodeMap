@@ -9,7 +9,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getArticleLink(article: IArticle | null | undefined) {
 	if (!article) return ''
-	return `/articles/${slugify(article.title)}`
+	const slug = slugify(article.title, { lower: true, strict: true })
+	const capitalizedSlug = slug.charAt(0).toUpperCase() + slug.slice(1)
+	return `/articles/${capitalizedSlug}`
 }
 
 export function customMarkdown(content: string) {

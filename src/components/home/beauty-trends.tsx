@@ -1,30 +1,17 @@
+import { useGetArticles } from '@/hooks/useArticles';
+import { getArticleLink } from '@/lib/utils';
+import { Link } from 'react-router';
+
 export const BeautyTrends = () => {
-  const trends = [
-    {
-      title: 'Zip Code Map',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/ZIP_code_zones.png',
-      description: "Detailed Zip Code Prefix Map with US Zip Codes Lookup by State and City",
-      category: 'Maps',
-      date: 'July 23, 2017',
-      excerpt: 'Zip Code Map, US Zip Codes Lookup by State and City File:ZIP Code zones.svg Wikimedia Commons Printable ZIP Code Maps Free Download Map With Zip Codes Texas | Capitoltheatreofgreeneville Printable ZIP Code Maps Free Download Map Of Zip Codes | Northcountrylittles Detailed Zip Code Prefix Map Florida Zip Codes Map, […]'
-    },
-    {
-      title: 'Houston Zip Code Map',
-      image: 'https://photo.houstonproperties.com/neighborhoods/houston-zip-code-map.jpg',
-      description: 'Houston Texas Zip Code Map with complete Harris County coverage',
-      category: 'City Maps',
-      date: 'July 23, 2017',
-      excerpt: 'Houston Texas Zip Code Map | HoustonProperties Houston Zip Code Map Free Zip Code Map Houston Zip Code Map Houston Zip Codes: List and Map Houston Zip Code Map Printable. Map. Get Free Image About World Maps Need zip code map please (Houston: zip codes, best, map of Houston Zip Codes Harris County, TX Zip […]'
-    },
-    {
-      title: 'Fort Worth Zip Code Map',
-      image: 'https://www.maxleaman.com/mortgage-resources/wp-content/uploads/2011/07/Fort-Worth-Zip-Code-Map.png',
-      description: 'Ft. Worth Zipcode Map with DFW area coverage and boundaries',
-      category: 'City Maps',
-      date: 'July 23, 2017',
-      excerpt: 'Ft. Worth Zipcode Map Fort Worth Zip Code Map Ft Worth Zipcode Search the MapTechnica Printable Map Catalog :: MapTechnica Dallas Ft. Worth Zipcode Map DFW Zip Code Map DFW Zipcode Map Search the MapTechnica Printable Map Catalog :: MapTechnica Fort Worth, TX Zip Codes Tarrant County Zip Code Boundary Map Search DFW homes by […]'
-    },
-  ];
+  const { data: articles, isLoading } = useGetArticles();
+
+  const latestArticles = articles
+    ?.sort(
+      (a, b) =>
+        new Date(b.published_date || 0).getTime() -
+        new Date(a.published_date || 0).getTime()
+    )
+    .slice(0, 3);
 
   return (
     <section className="py-16 bg-slate-100">
@@ -34,36 +21,50 @@ export const BeautyTrends = () => {
             Latest Zip Code Trends
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Stay ahead of the curve with our coverage of the latest zip code mapping trends and insights
+            Stay ahead of the curve with our coverage of the latest zip code
+            mapping trends and insights
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {trends.map((trend, index) => (
-            <div key={index} className="group relative">
-              <div className="relative h-80 w-full rounded-xl overflow-hidden bg-gray-200">
-                <img
-                  src={trend.image}
-                  alt={trend.title}
-                  className="object-cover transition-transform duration-500 group-hover:scale-110 w-full h-full"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-block px-3 py-1 bg-gray-600 rounded-full text-sm">
-                      {trend.category}
-                    </span>
-                    <span className="text-gray-300 text-sm">{trend.date}</span>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-2">{trend.title}</h3>
-                  <p className="text-gray-200 mb-3">{trend.description}</p>
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="group relative">
+                  <div className="relative h-80 w-full rounded-xl overflow-hidden bg-gray-200 animate-pulse"></div>
                 </div>
-              </div>
-            </div>
-          ))}
+              ))
+            : latestArticles?.map((article, index) => (
+                <Link
+                  to={getArticleLink(article)}
+                  key={index}
+                  className="group relative"
+                >
+                  <div className="relative h-80 w-full rounded-xl overflow-hidden bg-gray-200">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="object-cover transition-transform duration-500 group-hover:scale-110 w-full h-full"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="inline-block px-3 py-1 bg-gray-600 rounded-full text-sm">
+                          {article.type}
+                        </span>
+                        <span className="text-gray-300 text-sm">
+                          {article.published_date}
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-bold mb-2">
+                        {article.title}
+                      </h3>
+                      <p className="text-gray-200 mb-3">
+                        {article.summary}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
         </div>
       </div>
     </section>
